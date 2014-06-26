@@ -65,6 +65,12 @@ __global__ void kernel(float * d_data, const int N)
     s_data[tz][ty][tx] = curr;
     __syncthreads();
 
+    // Don't try to perform calculations on edges of data
+    if(ix == 0 || iy == 0 || ix == N-1 || iy == N-1 || iz == 0 || iz == N-1) return;
+	
+    // Keep input static so that values go up over time. (e.g. constant heat)
+    if(ix + iy*N + iz*N*N == MIDDLE) return;
+
     // Get halo regions and place them into shared memory
     
     // Upper midpoints + corners
@@ -158,12 +164,6 @@ __global__ void kernel(float * d_data, const int N)
     left_back_up     = s_data[tz-1][ty+1][tx-1]; __syncthreads();
     left_back_down   = s_data[tz-1][ty-1][tx-1]; __syncthreads();
     
-    // Don't try to perform calculations on edges of data
-    if(ix == 0 || iy == 0 || ix == N-1 || iy == N-1 || iz == 0 || iz == N-1) return;
-	
-    // Keep input static so that values go up over time. (e.g. constant heat)
-    if(ix + iy*N + iz*N*N == MIDDLE) return;
-
     // Compute output and place into curr and write to smem
     curr += (right + left + up + down + front + back);
     
