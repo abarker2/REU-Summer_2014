@@ -26,7 +26,7 @@ abarker2@uccs.edu}}
 
 % Abstract
 \begin{abstract}
-	The microprocessor field today has begun to reach its limits as power and thermal constraints have been met and no longer can much leverage of increasing the processor's clock speed be achieved. Thus, much of the scientific and engineering community has shifted to using many-core architectures, such as GPUs, in order to do highly-parallel computations. However, the switch to GPU has created problems of its own as developers of GPU kernels must understand the low-level specifications of the hardware in order to properly optimize code. This paper will focus on the use of genetic algorithms to guide the optimization of stencil codes on NVIDIA's Compute Unified Device Architecture (CUDA) based GPUs and GPGPUs.
+	The microprocessor field today has begun to reach its limits as power and thermal constraints have been met and no longer can much leverage of increasing the processor's clock speed be achieved. Thus, much of the scientific and engineering community has shifted to using many-core architectures, such as GPUs, in order to do highly-parallel computations. This paper focuses on the use of genetic algorithms to guide the optimization of stencil codes on NVIDIA's Compute Unified Device Architecture (CUDA) based GPUs and GPGPUs. In particular, we implemented three stencil kernels (7 point, 25 point, and 27 point Jacobi) in CUDA with each implementation parameterized for distinct optimization configurations (thread blocking and loop unrolling factors). We then used a genetic algorithm[cite DEAP] to find optimal configurations for each kernel. Our results show that this approach generates near-optimal optimization configurations quickly compared to exhaustive search of the optimization space.
 \end{abstract}
 
 % Introduction
@@ -49,9 +49,7 @@ abarker2@uccs.edu}}
 \section{Related Work}
 	Due to the high-memory bandwidth requirements needed for stencil computations, much of the research done for optimization focuses primarily on memory layout techniques and exploiting lower levels of memory such as cache and shared memory. One technique is 2.5D blocking in order to create the grid layout in memory by only finding the x and y values of the thread block and keeping the z axis constant\cite{Datta}. However, another paper has been written on a different blocking scheme that is optimal for stencil computations called 3.5D blocking which combines 3D blocking with 2.5D blocking in order to lower the amount of memory accesses for a stencil code\cite{Nguy}. Another promising research paper was done on efficient data layout for stencil codes on GPUs and similar multithreaded architectures which provides another key optimization to incorporate in this research\cite{Jaeger}. 
 
-	{\color{red}Recent work in machine learning applications for guiding stencil code optimization, a case study was employed to see if statistical machine learning and genetic algorithms could be used to guide the optimization of stencil kernels on multicore architectures\cite{Gana}.}
-
-	Also, many auto-tuning and auto-generation techniques have been explored, most notably research done on the auto-tuning of 3D stencil codes on GPU clusters, which details a rigorous auto-tuning and auto-generation framework for CUDA devices, which can be incorporated into our work by benchmarking our machine learning algorithm's speed against the speed of a similar auto-tuning mechanism based on the research\cite{Zhang}. 
+	Recent work in machine learning applications for guiding stencil code optimization, a case study was employed to see if statistical machine learning and genetic algorithms could be used to guide the optimization of stencil kernels on multicore architectures\cite{Gana}.
 
 % Motivation
 %\section{Motivation}
