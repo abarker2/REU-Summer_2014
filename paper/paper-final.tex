@@ -29,9 +29,12 @@ abarker2@uccs.edu}}
 
 % Abstract
 \begin{abstract}
+	\todo{Add a reference to the tuning framework in here.}
 	The microprocessor field today has begun to reach its limits as power and thermal constraints have been met and no longer can much leverage of increasing the processor's clock speed be achieved. Thus, much of the scientific and engineering community has shifted to using many-core architectures, such as GPUs, in order to do parallel computations. This paper focuses on the use of genetic algorithms to guide the optimization of stencil codes on NVIDIA's Compute Unified Device Architecture (CUDA) based GPUs and GPGPUs. In particular, we have implemented two separate stencil kernels (Jacobi 7 point and 27 point) in CUDA with each implementation parameterized for several optimiation parameters (thread blocking and loop unrolling factors). We then used a genetic algorithm\cite{DEAP} to find optimal configurations for each kernel. Our results show that this approach is capable of generating near-optimal configurations in a much more timely fashion than exhaustive search.
+
 \end{abstract}
 
+a
 \section{Introduction}
 	As microprocessors reach the power wall, benefits of increasing the clock frequency are no longer achieveable as the cost to system stability and cooling is too much to warrant the increase in performance\cite{landscape}. This has shifted the focus of the parallel community to many-core architectures, such as those found in Graphical Processing Units (GPUs), as they are comprised of a few hundred or thousand simple cores that are capable of performing highly-parallel computations with much more throughput than a typical multi-core system. However, developing parallel algorithms for GPUs can be no simple task for developers as developers must have a firm understanding of the underlying architecture and hardware properties in order to correctly write programs that correctly take advantage of these properties. Thus, there is a desire to develop a method to automatically apply optimizations to GPU programs in order to avoid the necessity of understanding the complexities of the hardware and architecture of the system.
 
@@ -43,10 +46,11 @@ abarker2@uccs.edu}}
 
 \begin{figure*}[ht]
 	\centering
-	\includegraphics[width=18cm]{auto-tuning_framework.png}
+	\includegraphics[width=\linewidth]{auto-tuning_framework.png}
 	\caption{Overview of auto-tuning framework}
 \end{figure*}
 
+	\todo{Talk about the tuning framework as a whole and that your research is a validation tool of the framework (feasability study) so that your research appears more complete.}
 	This research is the development of the optimal configuration generator portion of the framework detailed in Figure 1. The auto-tuning framework will be used to optimize existing stencil codes using machine learning in order to predict optimal tuning parameters that will be given to the optimizer which will apply these optimizations to the given stencil code and then output the optimized version of the given code. This is done so that developers can easily write unoptimized code for use in their programs and then run this auto-tuning framework on their code in order to use optimized code that correctly fits within their existing program.
 
 	%\todo{Expand this sentence: In particular, we have implemented three separate stencil kernels (Jacobi 7 point, 25 point, and 27 point) in CUDA with each implementation parameterized for several optimiation parameters (thread blocking and loop unrolling factors). into a paragraph, along with description of genetic algorithms.}
@@ -56,17 +60,15 @@ abarker2@uccs.edu}}
 	The optimization parameters considered for the generation of the search space that we used were the number of threads to use in the computation, and the distance to unroll the inner loop in our code. This inner-loop arises from our use of 2.5D blocking, a thread blocking optimization that allows for threads to only be launched in a single plane of the 3D data, and then stream through the remaining axis as the computation goes on. This search space consists of 60 different thread configurations and 192 different loop unrolling configurations, giving us a search space of 11,520 possible combinations. Although the size of this search space is relatively small for most machine learning applications, one must consider the time it takes to compile the code as on our system, typical complilation time is 3 seconds, meaning that an exhaustive search through the search space would take more than 9 hours, whereas our use of a genetic algorithm took on average 8 minutes to find an optimized configuration.
 
 %	\todo{List the structure of the rest of the paper. (The rest of the paper is organized as follows:...}
-	The rest of the paper will be organized into four sections: related work, tuning framework, experimental results, and conclusions and future work. In related work, other research that has been done in the field will be presented and summarized along with how it will be utilized in this research. In the tuning framework section we go into more detail of stencil codes, optimizations, and the genetic algorithm. Experimental results will include the experimental setup and the results we obtained from running our implementation on three different systems as well as a discussion of these results. Conclusions and future work will summarize this research and the outlook of incorporating it into future work.
+	The rest of the paper is organized into four sections: related work, tuning framework, experimental results, and conclusions and future work. In related work, other research that has been done in the field is presented and summarized along with how it is utilized in this research. The tuning framework section goes into more detail of stencil codes, optimizations, and the genetic algorithm that we used. Experimental results includes the experimental setup and the results we obtained from running our implementation on three different systems as well as a discussion of these results. Conclusions and future work summarizes this research and presents the outlook of incorporating it into future work.
 
 \section{related work}
-	the current state of stencil code research is most researchers are focused primarily on either manual optimization of the codes or creating auto-tuning tools to automatically input correctly optimized configurations for stencils. datta et all have demonstrated the usefulness of both manual optimizations and auto-tuning techniques as a means to effectively optimize stencil codes on both cpus and gpus\cite{datta}. this paper provides an effective base for retrieving optimizations as ganapathi et all cite this work as their basis for using machine learning to optimize cpu stencil codes. they used genetic algorithms in combination with the kcca algorithm to perform quick searches through the parameter space\cite{ganapathi}. zhang et all also researched auto-tuning and auto-generation of optimized stencil codes specifically for gpus and gpu clusters which provides a more specific list of optimizations that are specifically used for gpu stencil code optimizations that we can use in this research\cite{zhang}. in terms of advanced manual optimizations for gpu stencil codes, nguyen et all provided a state-of-the art stencil code optimization that uses a combination of 2.5d thread blocking combined with 1d temporal blocking to create what they have called "3.5d" blocking which provides throughput increases on gpus of about two times what prior research had claimed\cite{nguy}. this research can be parameterized by changing the amount of temporal blocking to perform, thus allowing a search space to be created for this optimization to incorporate into this research.
-
-	these works will be used to implement a highly-configurable stencil code that can be tuned to easily change the settings for the various optimizations and will hopefully show some promise for using machine learning as a means to traverse the search space as opposed to other methods of auto-optimization.
+	\todo{Revise this section so that it contains NO future tense as well as includes more details on all of the works that are used in this research.}
+	The current state of stencil code research is most researchers are focused primarily on either manual optimization of the codes or creating auto-tuning tools to automatically input correctly optimized configurations for stencils. Datta et all have demonstrated the usefulness of both manual optimizations and auto-tuning techniques as a means to effectively optimize stencil codes on both cpus and gpus\cite{Datta}. This paper provides an effective base for retrieving optimizations as gana et all cite this work as their basis for using machine learning to optimize cpu stencil codes. They used genetic algorithms in combination with the kcca algorithm to perform quick searches through the parameter space\cite{gana}. Zhang et all also researched auto-tuning and auto-generation of optimized stencil codes specifically for gpus and gpu clusters which provides a more specific list of optimizations that are specifically used for gpu stencil code optimizations that we can use in this research\cite{zhang}. In terms of advanced manual optimizations for gpu stencil codes, nguyen et all provided a state-of-the art stencil code optimization that uses a combination of 2.5d thread blocking combined with 1d temporal blocking to create what they have called "3.5d" blocking which provides throughput increases on gpus of about two times what prior research had claimed\cite{nguy}. This research can be parameterized by changing the amount of temporal blocking to perform, thus allowing a search space to be created for this optimization to incorporate into this research.
 	
-	\section{Tuning Framework}
-
-\subsection{Stencil Codes}
-	Stencil codes are primarily used to solve paritial differential equations in order to simulate {\color{red}things} such as heat flow or electromagnetic field propogation\cite{Datta}. Most methods for solving these partial differential equations use iterative sweeps through spatial data, performing nearest-neighbor computations which are called stencils. Each node in the computation is weighted based on distance from the central node, which allows for the solving partial differential equations by switching these weights for the coefficients used in the solver. Using this structure, methods are created for different types of partial differential equation solvers such as Jacobi iterative methods, which are the stencil codes we used in this research.
+\section{Tuning Framework}
+	\subsection{Stencil Codes}
+	Stencil codes are primarily used to solve paritial differential equations in order to perform simulations such as heat flow or electromagnetic field propogation\cite{Datta}. Most methods for solving these partial differential equations use iterative sweeps through spatial data, performing nearest-neighbor computations which are called stencils. Each node in the computation is weighted based on distance from the central node, which allows for the solving partial differential equations by switching these weights for the coefficients used in the solver. Using this structure, methods are created for different types of partial differential equation solvers such as Jacobi iterative methods, which are the stencil codes we used in this research.
 
 \begin{figure}[h]
 	\centering
@@ -87,7 +89,13 @@ abarker2@uccs.edu}}
 
 \section{Experimental Results}
 \todo{Start with goal, then setup, then results}
-	The setup we used to perform the experiments on consisted of three GPUs: one GPGPU (Tesla C2050) and two standard GPUs (GTX 480, 680). 
+The setup we used to perform the experiments on consisted of three GPUs: one GPGPU (Tesla C2050) and two standard GPUs (GTX 480, 680). Figure 3 details the theoretical peak FLoating-point OPeration rate (FLOP) determined by the number of cores ($\alpha$) multiplied by the clock rate of each code ($\delta$) multiplied by the number of FLOPs that can be performed each clock cycle ($\gamma$).
+\begin{figure}[h]
+	\centering
+	$\alpha\times\delta\times\gamma$
+	\caption{Theoretical peak FLOP rate equation.}
+\end{figure}
+
 \begin{figure}[h]
 	\begin{center}
 		\begin{tabular}
